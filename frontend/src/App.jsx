@@ -8,41 +8,48 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const generatePlan = async () => {
-    if (!subject.trim()) {
-      setError("Subject is required");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-    setResult("");
-
-    try {
-      const response = await fetch(
-  "https://ai-study-companion-xkb0.onrender.com/generate-plan",
-  {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      subject,
-      level,
-      hours_per_day: Number(hours),
-    }),
+const generatePlan = async () => {
+  if (!subject.trim()) {
+    setError("Please enter a subject.");
+    return;
   }
-);
 
+  setLoading(true);
+  setError("");
+  setResult("");
 
-      const data = await res.json();
-      if (!res.ok) throw new Error();
+  try {
+    const response = await fetch(
+      "https://ai-study-companion-xkb0.onrender.com/generate-plan",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          subject,
+          level,
+          hours_per_day: Number(hours),
+        }),
+      }
+    );
 
-      setResult(data.study_plan);
-    } catch {
-      setError("Failed to generate study plan. Please try again.");
-    } finally {
-      setLoading(false);
+    const data = await response.json();
+    console.log("API RESPONSE:", data); // 👈 ADD THIS
+
+    if (!response.ok) {
+      throw new Error(data.detail || "API Error");
     }
-  };
+
+    setResult(data.study_plan);
+  } catch (err) {
+    console.error("FRONTEND ERROR:", err); // 👈 ADD THIS
+    setError("Failed to generate study plan. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div style={styles.page}>
