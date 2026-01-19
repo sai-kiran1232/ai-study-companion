@@ -19,15 +19,19 @@ export default function App() {
     setResult("");
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/generate-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subject,
-          level,
-          hours_per_day: Number(hours),
-        }),
-      });
+      const response = await fetch(
+  "https://ai-study-companion-xkb0.onrender.com/generate-plan",
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      subject,
+      level,
+      hours_per_day: Number(hours),
+    }),
+  }
+);
+
 
       const data = await res.json();
       if (!res.ok) throw new Error();
